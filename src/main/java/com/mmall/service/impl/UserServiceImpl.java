@@ -63,6 +63,7 @@ public class UserServiceImpl implements IUserService {
     }
 
 
+    @Override
     public ServerResponse<String> checkValid(String str, String type) {
         if (StringUtils.isNotBlank(type)) {
             if (Const.USERNAME.equals(type)) {
@@ -84,6 +85,7 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.createBySuccess("校验成功");
     }
 
+    @Override
     public ServerResponse<String> selectQuestion(String username) {
         ServerResponse validResponse = this.checkValid(username, Const.USERNAME);
         if (validResponse.isSuccess()) {
@@ -96,6 +98,7 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.createByErrorMsg("找回密码问题为空");
     }
 
+    @Override
     public ServerResponse<String> checkAnswer(String username, String question, String answer) {
         int resultCount = userMapper.checkAnswer(username, question, answer);
         if (resultCount == 0) {
@@ -106,6 +109,7 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.createBySuccess(forgetToken);
     }
 
+    @Override
     public ServerResponse<String> forgetResetPassword(String username, String newPassword, String forgetToken) {
         if (StringUtils.isBlank(forgetToken)) {
             ServerResponse.createByErrorMsg("token需要传递");
@@ -130,6 +134,7 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.createByErrorMsg("修改密码失败");
     }
 
+    @Override
     public ServerResponse<String> resetPassword(User user, String oldPassword, String newPassword) {
         int resultCount = userMapper.checkPassword(oldPassword, user.getId());
         if (resultCount == 0) {
@@ -143,6 +148,7 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.createByErrorMsg("修改密码失败");
     }
 
+    @Override
     public ServerResponse<User> updateInformation(User user) {
         int resultCount = userMapper.checkEmailByUserId(user.getEmail(), user.getId());
         if (resultCount > 0) {
@@ -161,6 +167,7 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.createByErrorMsg("更新用户信息失败");
     }
 
+    @Override
     public ServerResponse<User> getInformation(Integer userId) {
         User user = userMapper.selectByPrimaryKey(userId);
         if (user == null) {
@@ -168,6 +175,15 @@ public class UserServiceImpl implements IUserService {
         }
         user.setPassword(StringUtils.EMPTY);
         return ServerResponse.createBySuccess(user);
+    }
+
+    //backend 检查是否为管理员用户
+    @Override
+    public ServerResponse checkAdminRole(User user) {
+        if (user != null && user.getRole().intValue() == Const.Role.ROLE_ADMIN) {
+            return ServerResponse.createBySuccess();
+        }
+        return ServerResponse.createByError();
     }
 
 }
