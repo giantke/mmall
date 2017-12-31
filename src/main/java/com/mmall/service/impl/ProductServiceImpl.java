@@ -145,6 +145,7 @@ public class ProductServiceImpl implements IProductService {
         return productListVo;
     }
 
+    @Override
     public ServerResponse<PageInfo> searchProduct(String productName, Integer productId, int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         if (StringUtils.isNotBlank(productName)) {
