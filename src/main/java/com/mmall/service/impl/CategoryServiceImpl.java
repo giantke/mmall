@@ -28,6 +28,7 @@ public class CategoryServiceImpl implements ICategoryService {
 
     private Logger logger = LoggerFactory.getLogger(CategoryServiceImpl.class);
 
+    @Override
     public ServerResponse addCategory(String categoryName, Integer parentId) {
         if (StringUtils.isBlank(categoryName) || parentId == null) {
             return ServerResponse.createByErrorMsg("添加分类参数错误");
@@ -45,6 +46,7 @@ public class CategoryServiceImpl implements ICategoryService {
         return ServerResponse.createByErrorMsg("添加品类失败");
     }
 
+    @Override
     public ServerResponse updateCategory(String categoryName, Integer categoryId) {
         if (StringUtils.isBlank(categoryName) || categoryId == null) {
             return ServerResponse.createByErrorMsg("更新分类参数错误");
@@ -60,6 +62,7 @@ public class CategoryServiceImpl implements ICategoryService {
         return ServerResponse.createByErrorMsg("更新分类失败");
     }
 
+    @Override
     public ServerResponse<List<Category>> getChildrenParallelCategory(Integer categoryId) {
         List<Category> categoryList = categoryMapper.selectChildrenCategoryByParentId(categoryId);
         if (CollectionUtils.isEmpty(categoryList)) {
@@ -68,7 +71,8 @@ public class CategoryServiceImpl implements ICategoryService {
         return ServerResponse.createBySuccess(categoryList);
     }
 
-    public ServerResponse selectCategoryAndChildrenById(Integer categoryId) {
+    @Override
+    public ServerResponse<List<Integer>> selectCategoryAndChildrenById(Integer categoryId) {
         Set<Category> categorySet = Sets.newHashSet();
         findChildCategory(categorySet, categoryId);
 
@@ -82,6 +86,7 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
 
+    @Override
     public Set<Category> findChildCategory(Set<Category> categorySet, Integer categoryId) {
         Category category = categoryMapper.selectByPrimaryKey(categoryId);
         if (category != null) {

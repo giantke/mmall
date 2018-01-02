@@ -32,7 +32,7 @@ public class FTPUtil {
         FTPUtil ftpUtil = new FTPUtil(ftpIp, 21, ftpUser, ftpPass);
         logger.info("开始连接ftp服务器");
         boolean result = ftpUtil.uploadFile("img", fileList);
-        logger.info("结束上传，上传结果为：{}");
+        logger.info("结束上传，上传结果为：{}", result);
         return result;
     }
 
@@ -49,7 +49,7 @@ public class FTPUtil {
                 ftpClient.enterLocalPassiveMode();
                 for (File fileItem : fileList) {
                     fis = new FileInputStream(fileItem);
-                    ftpClient.storeFile(remotePath, fis);
+                    ftpClient.storeFile(fileItem.getName(), fis);
                 }
             } catch (IOException e) {
                 uploaded = false;
@@ -64,11 +64,11 @@ public class FTPUtil {
     }
 
     private boolean connectServer(String ip, int port, String user, String pwd) {
-        FTPClient ftpClient = new FTPClient();
+        ftpClient = new FTPClient();
         boolean isSuccess = false;
         try {
-            ftpClient.connect(ftpIp);
-            isSuccess = ftpClient.login(ftpUser, ftpPass);
+            ftpClient.connect(ip);
+            isSuccess = ftpClient.login(user, pwd);
         } catch (IOException e) {
             logger.error("连接FTP服务器异常", e);
         }
